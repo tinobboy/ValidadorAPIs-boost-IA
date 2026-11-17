@@ -25,4 +25,5 @@ build/tmp/
 
 # Ignorar archivos de configuración local
 *.properties
+!gradle/wrapper/gradle-wrapper.properties
 *.env
