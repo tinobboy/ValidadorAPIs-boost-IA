@@ -91,6 +91,10 @@ ValidadorAPIs/
 │     ├─ Styles/           # CSS de los adjuntos HTML
 │     └─ defaults.yml
 │
+├─ web/                    # Módulo E2E con Playwright (Java)
+│  ├─ src/test/java/       # Page Objects, tests y utilidades web
+│  ├─ src/test/resources/  # Datos de prueba (login)
+│  └─ README.md
 ├─ settings.yml            # Configuración por ambiente
 ├─ build.gradle            # Dependencias y tareas
 └─ README.md
@@ -238,6 +242,24 @@ task runTestsBDD(type: Test) {
 ```
 
 Etiquetas disponibles: `@smoke`, `@regression`, `@personajes`, `@episodios`, `@ubicaciones`, `@integracion`.
+
+### 6. Ejecutar los tests web (Playwright con Java)
+
+El proyecto incluye el módulo [`web/`](web/README.md) con el flujo E2E de
+SauceDemo migrado desde el proyecto TypeScript original a **Playwright Java**.
+
+```bash
+# Primera vez: descargar el navegador
+gradlew.bat :web:installPlaywrightBrowsers
+
+# Ejecutar el test
+gradlew.bat :web:runWebTests
+
+# Ver el navegador (modo no headless)
+gradlew.bat :web:runWebTests -Dplaywright.headless=false
+```
+
+En Linux/macOS reemplazá `gradlew.bat` por `./gradlew`.
 
 ---
 

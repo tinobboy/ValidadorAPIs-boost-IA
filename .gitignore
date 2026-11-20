@@ -27,3 +27,9 @@ build/tmp/
 *.properties
 !gradle/wrapper/gradle-wrapper.properties
 *.env
+
+# Ignorar artefactos de los tests web (Playwright)
+web/build/
+web/test-results/
+web/playwright-report/
+web/.playwright/

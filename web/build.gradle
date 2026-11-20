@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+}
+
+group 'lucas.barabas'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+def playwrightVersion = '1.50.0'
+def junitVersion = '5.10.2'
+def jacksonVersion = '2.19.0'
+
+dependencies {
+    testImplementation group: 'com.microsoft.playwright', name: 'playwright', version: playwrightVersion
+    testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
+}
+
+// El build por defecto no ejecuta los tests web porque necesitan los navegadores
+// de Playwright instalados. Usar la tarea runWebTests para ejecutarlos.
+tasks.named('test') {
+    enabled = false
+}
+
+tasks.register('runWebTests', Test) {
+    group = 'verification'
+    description = 'Ejecuta los tests E2E de SauceDemo con Playwright (Java).'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'playwright.headless', System.getProperty('playwright.headless', 'true')
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat 'full'
+    }
+}
+
+tasks.register('installPlaywrightBrowsers', JavaExec) {
+    group = 'playwright'
+    description = 'Descarga el navegador Chromium que utiliza Playwright.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
+    args 'install', 'chromium'
+}
+
+tasks.register('installPlaywrightDeps', JavaExec) {
+    group = 'playwright'
+    description = 'Instala las dependencias del sistema requeridas por Playwright (Linux).'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
+    args 'install-deps'
+}
